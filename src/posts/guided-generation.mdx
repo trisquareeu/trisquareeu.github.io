@@ -1,0 +1,255 @@
+---
+title: Stop Wrestling with LLM Prompts
+description: > 
+  Tired of wrestling with unpredictable AI responses? Stop the endless error handling and validation nightmares. Here's the game-changer: using structured outputs can boost your reliability to 100% - but there's a tradeoff you should know about.
+publishDate: 2024-11-05
+cover: guided-generation.png
+readTime: 9
+authors:
+  - Kordian Grabowski
+  - Michał Kalinowski
+tags:
+  - AI
+  - SoftwareEngineering
+  - MachineLearning
+  - LLM
+---
+
+
+# Stop Wrestling with LLM Prompts
+
+Generative AI, such as Large Language Models (LLM), is becoming a standard component of modern applications. While using this technology in software may significantly extend the viable possibilities, it also puts a pinch of unpredictability and randomness into the strict logic of a computer program. Regardless of software type, data sanitization and validation have always been among the most critical and challenging aspects of programming. Failing to properly sanitize data can lead to a range of severe problems.
+
+Large Language Models are known for generating human-like, coherent, and contextually appropriate responses. This is because these models were trained on huge corpora of natural language with carefully selected training data that best represents human communication. Because LLMs learn to mimic this fluid, context-dependent style of communication, they tend to generate outputs with similar characteristics - outputs that may be perfectly understandable to humans but lack the strict consistency and precise formatting that computer systems require. This makes them particularly challenging for direct programmatic use, as their outputs often need complex parsing and validation.
+
+In this article, we will show you a possible way of guiding LLM to always output correctly structured data with limited vocabulary. We believe this may significantly reduce the overhead of data sanitization. Although we will stick to JSON and JSON Schemas as examples, the described approach could be easily extended to other formats.
+
+## Know the benefits
+
+Based on [OpenAI's benchmarks](https://openai.com/index/introducing-structured-outputs-in-the-api/), structured outputs can achieve 100% reliability in generating schema-compliant responses, compared to significantly lower reliability of traditional prompting. This approach solves a long-standing challenge where developers had to work around LLM limitations through complex prompting, retry mechanisms, and open-source tooling.
+
+<BarChart
+  dataKey="type"
+  h={'40vh'}
+  series={[{ name: 'Reliability' }]}
+  maw={700}
+  data={[
+    { type: 'Prompting alone', Reliability: 85 },
+    { type: 'Structured generation', Reliability: 100 }
+  ]}
+  maxBarWidth={50}
+  yAxisLabel="Reliability"
+  xAxisLabel="gpt-4o-2024-08-06"
+  unit={'%'}
+  yAxisProps={{ domain: [50, 100] }}
+ />
+
+## Make your JSON valid
+
+JSON imposes strict rules for syntactic validity. However, it doesn't describe the data structure itself. To achieve that, it needs to be extended with other solutions, like JSON Schema, which provides a way to describe the expected structure and constraints of a JSON instance, including data types, required fields, and value restrictions. The combination of these two can be seen as an example of a formal language. It means that these rules can be described by a formal grammar.
+
+For the goal of validating JSON instances, we should use the simplest grammar that can describe the syntactic requirements. The founder of modern linguistics, Noam Chomsky, proposed four classes of formal grammars with increasing computational resources required to use it. Chomsky associated each class to a specific type of automaton that recognizes it.
+
+<ArticleSvg name={'grammars'} style={{ width: '100%', maxHeight: '50vh' }} />
+
+The least complex, regular grammars, can be decided by a finite-state automaton. The next one, a more complex class, is context-free grammars, which can be recognized by pushdown automata. These classes are then followed by context-sensitive grammars and recursively enumerable grammars that have increasing requirements for computational capabilities.
+
+Unfortunately, from a formal language perspective, JSON is not a regular language. Moreover, if no duplicated keys are allowed, it is not even a context-free language. Therefore, it is not possible to parse or validate it using just the context-free grammars or regular expressions ([similarly to XML](https://stackoverflow.com/a/1732454)).
+
+However, with a few tricks and some reasonable limitations, a useful subset of JSON Schema features could be converted to a relatively simple Context-Free Grammar.
+
+## Use Context-Free Grammars
+
+In a nutshell, Context-Free Grammar is a way of describing a language using basic (terminal) symbols and mappings between complex (non-terminal) symbols and other complex and basic symbols. These mappings are often called production rules. The goal is to describe all complex symbols by mappings that will eventually lead to basic symbol at the end.
+
+Let's consider the following JSON Schema.
+
+<CodeExample
+  code={
+    `
+    {
+      "type": "object",
+      "description": "A suggestion of a person which should be invited to the party",
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["John", "Anne", "Matthew"]
+        },
+        "surname": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "surname"],
+      "additionalProperties": false
+    }
+    `
+  }
+  language={'JSON'}
+ />
+
+JSON syntax and JSON Schema allow for multiple permutations in data structure. As previously discussed, this makes both CFGs and regular expressions insufficient for validating all possible forms. However, for generation purposes, we can select a single structural variant and describe it using CFG production rules:
+
+<CodeExample
+  code={
+    `
+S -> { "name": Name , "surname": String }
+Name -> "John" | "Anne" | "Matthew"
+String -> " Chars "
+Chars -> Char | Char Chars
+Char -> a | b | c | ... | X | Y | Z
+    `
+  }
+  language={'plain'}
+ />
+
+Following these production rules results in a valid JSON instance. However, as demonstrated above, the CFG imposes additional constraints beyond those specified by JSON syntax and JSON Schema. The key differences are:
+
+- properties must appear in strictly defined order
+- all properties are required to be in the document
+- there can't be any undeclared property in the document
+
+This is why we specified the **required** property as well as set **additionalProperties** to **false** in JSON Schema. Apparently OpenAI uses [similar considerations](https://platform.openai.com/docs/guides/structured-outputs/supported-schemas) for their structured output feature.
+
+## Ensure syntactic validity by guided generation
+
+Let us take a quick look at the LLM processing steps that play a key role in guided generation. In the final layer, prior to token selection, the model outputs activation scores for each word in its vocabulary. Activation scores on that layer will later determine probability of each token becoming the final output, usually through a process known as nucleus sampling.
+
+<ArticleSvg name={'activation_scores'} style={{ width: '100%', maxHeight: '75vh' }} />
+
+When we pass the input to the LLM, according to the production rules of the mentioned grammar, the only valid names are John, Anne, or Matthew. However, the examined model predicts Stephan as the most likely new token.
+
+<Code
+  code={[
+    {
+      language: 'Python',
+      code: `
+class MyLogitsProcessor(LogitsProcessor):
+    def __init__(self, tokenizer):
+        vocab = tokenizer.get_vocab()
+        allowed_names = ["John", "Anne", "Matthew"]
+        self.allowed_token_ids = [vocab[name] for name in allowed_names]
+
+    def __call__(self, input_ids, scores):
+        mask = torch.ones_like(scores) * -float('inf')
+        mask[:, self.allowed_token_ids] = 0
+        return scores + mask
+      `
+    }]}
+/>
+
+To make output JSON Schema compliant, we must force model to generate only valid tokens. Conveniently, most of modern causal models expose an API that allows modifications of activation scores on the last layer, just before the token selection. Following code demonstrates how to modify logits to ensure that generation follows the grammar production rules:
+
+
+<Note type={'warning'}>The prompt provided here is quite basic, but it should suffice to illustrate the concept of guided generation.</Note>
+
+<Code
+  code={[
+    {
+      language: 'Python',
+      code: `
+tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
+model = AutoModelForCausalLM.from_pretrained("google/gemma-2-2b")
+
+prompt = f"""
+Write the answer using the following schema {json_schema}
+
+Stephan is my best friend. Which colleague should I invite to his party?
+
+Answer: {{\"name\": \"
+"""
+
+inputs = tokenizer(prompt, return_tensors="pt")
+
+outputs = model.generate(
+    input_ids=inputs['input_its'],
+    attention_mask=inputs['attention_mask'],
+    max_new_tokens=1,
+    logits_processor=[MyLogitsProcessor(tokenizer)]
+)
+      `
+    }]}
+/>
+
+The code above is guaranteed to write John, Anne or Matthew as a next token. This approach is called guided generation, known also as constrained decoding.
+
+While implementing guided generation with local models gives us precise control over token selection, most people will not run local LLMs for production use cases because they require extensive resources and expertise. Fortunately, major cloud providers have recognized the importance of structured outputs and now offer this functionality as a built-in feature.
+
+For convenience, we can use frameworks like [LangChain](https://www.langchain.com/) which provides a standardized way of interacting with these LLMs and their structured output capabilities. Here's how we can solve our previous party invitation problem using a cloud-based approach:
+
+<Code
+  code={[
+    {
+      language: 'Python',
+      code: `
+class InvitationSuggestion(BaseModel):
+    """A suggestion of a person which should be invited to the party"""
+    name: str = Field(description="Colleague name",enum=["John", "Anne", "Matthew"])
+    surname: str = Field(description="Colleague surname")
+
+OPENAI_API_KEY="insert your key here"
+
+model = ChatOpenAI(model="gpt-4o", temperature=0, api_key=OPENAI_API_KEY)
+# Bind InvitationSuggestion schema as a tool to the model
+model_with_structured_output = model.with_structured_output(InvitationSuggestion, strict=True)
+# Invoke the model
+ai_msg = model_with_structured_output.invoke("Stephan is my best friend. Which colleague should I invite to his party?")
+
+print(ai_msg) # InvitationSuggestion(name='John', surname='Doe')
+      `
+    }
+  ]}
+ />
+
+## Be aware of negative effects
+
+Formal languages are not similar to natural language corpora used to train models. The stricter the format is, the greater impact it has on the LLM performance. According to a [recent study](https://arxiv.org/pdf/2408.02442), structured generation may significantly decrease the reasoning ability of LLM. This is particularly challenging, because, while the LLM output will adhere to the schema, it still may contain logically incorrect or nonsensical information. Depending on the task, it can be very difficult to detect that LLM has not returned a correct answer, which can cause serious errors downstream in the application. Fortunately, we can preserve the original abilities of the unrestricted models, using two-step prompting.
+
+The idea is quite simple. First, let the LLM use its full reasoning capabilities by solving the task in unconstrained, natural language. Next, prompt the model again to summarize its response into the desired structured format. By applying this solution, we can achieve results comparable to those obtained through natural language processing, while maintaining the model's high performance. Ideally, we can use [chain-of-thought prompting with examples provided](https://arxiv.org/pdf/2201.11903), which can significantly improve LLM reasoning capabilities by having the model explain its thought process step by step. Here's how we can implement this two-step approach:
+
+<Code
+  code={[
+    {
+      language: 'Python',
+      code: `
+class InvitationSuggestion(BaseModel):
+    """A suggestion of a person which should be invited to the party"""
+    name: str = Field(description="Colleague name", enum=["John", "Anne", "Matthew"])
+    surname: str = Field(description="Colleague surname")
+
+OPENAI_API_KEY="insert your key here"
+model = ChatOpenAI(model="gpt-4o", temperature=0, api_key=OPENAI_API_KEY)
+
+# Step 1: Let the model reason in natural language
+reasoning_prompt = """
+Stephan is my best friend. Which colleague should I invite to his party?
+Think step by step about who would be the best choice based on typical social dynamics.
+"""
+
+reasoning_result = model.invoke(reasoning_prompt)
+
+# Step 2: Convert the reasoning into structured format
+structured_prompt = f"Answer based on this reasoning: {reasoning_result}"
+
+model_with_structured_output = model.with_structured_output(InvitationSuggestion, strict=True)
+final_suggestion = model_with_structured_output.invoke(structured_prompt)
+
+print(final_suggestion)  # InvitationSuggestion(name='John', surname='Smith')
+      `
+    }
+  ]}
+ />
+
+This approach allows the model to first think freely about various factors that might make someone a good guest, before constraining its output to our required format. The result is both structured and well-reasoned, combining the best of both worlds.
+
+## Make the choice
+
+By using structured generation, we can use the power of large language models while ensuring our applications receive predictable, properly structured data. While constrained decoding can negatively affect reasoning abilities, this effect can be mitigated by using techniques like two-step prompting, that comes with a cost of increased latency and additional tokens spent.
+
+## Dive deeper
+We found following articles extremely useful when working on our Agentic AI:
+- [Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., ... & Amodei, D. (2020). _Language Models are Few-Shot Learners_.](https://doi.org/10.48550/arXiv.2005.14165)
+- [Beurer-Kellner, L., Fischer, M., & Vechev, M. (2024). _Guiding LLMs The Right Way: Fast, Non-Invasive Constrained Generation_.](https://doi.org/10.48550/arXiv.2403.06988)
+- [Netz, L., Reimer, J., & Rumpe, B. (2024). _Using Grammar Masking to Ensure Syntactic Validity in LLM-based Modeling Tasks_.](https://doi.org/10.48550/arXiv.2407.06146)
+- [Tam, Z. R., Wu, C. K., Tsai, Y. L., Lin, C. Y., Lee, H. Y., & Chen, Y. N. (2024). _Let Me Speak Freely? A Study on the Impact of Format Restrictions on Performance of Large Language Models_.](https://doi.org/10.48550/arXiv.2408.02442)
+- [Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., ... & Zhou, D. (2023). _Chain-of-Thought Prompting Elicits Reasoning in Large Language Models_.](https://doi.org/10.48550/arXiv.2201.11903)
+- [Willard, B. T., & Louf, R. (2023). _Efficient Guided Generation for Large Language Models_.](https://doi.org/10.48550/arXiv.2307.09702)

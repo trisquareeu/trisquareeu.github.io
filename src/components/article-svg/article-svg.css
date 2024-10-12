@@ -1,0 +1,24 @@
+.grammars_svg__text {
+  fill: var(--mantine-color-text)
+}
+
+.grammars_svg__stroke {
+  stroke: var(--mantine-primary-color-filled)
+}
+
+.activation_scores_svg__text {
+  fill: var(--mantine-color-body)
+}
+
+
+.activation_scores_svg__filled {
+  fill: var(--mantine-primary-color-filled)
+}
+
+.activation_scores_svg__textTitle {
+  fill: var(--mantine-color-text)
+}
+
+.activation_scores_svg__scoreRect {
+  fill: var(--mantine-primary-color-filled-hover)
+}

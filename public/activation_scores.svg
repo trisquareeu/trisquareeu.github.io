@@ -1,0 +1,39 @@
+<svg viewBox="0 0 700 810" fill="none" xmlns="http://www.w3.org/2000/svg">
+<title id="svgTitle">A flowchart illustrating LLM token activation scores. The diagram shows an input question being processed through an LLM, resulting in vocabulary token scores where "Stephan" (26.65) ranks highest among similar names, despite John, Anne, and Matthew being the only valid options according to the grammar rules.</title>
+<rect class="filled" y="54" width="700" height="120" />
+<text class="textTitle" xml:space="preserve" style="white-space: pre" font-size="32" letter-spacing="0em"><tspan x="311" y="31.1364">Input</tspan></text>
+<rect class="filled" y="54" width="700" height="120" />
+<rect class="filled" y="54" width="700" height="120"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="287.977" y="81.3182">[JSON Schema]&#10;</tspan><tspan x="341.391" y="100.318">...&#x2028;</tspan><tspan x="41" y="119.318">Stephan is my best friend. Which colleague from work should I invite to his party?&#x2028;</tspan><tspan x="348" y="138.318">&#x2028;</tspan><tspan x="311.164" y="157.318">{&#x201c;name&#x201d;: &#x201c;</tspan></text>
+<text class="textTitle" xml:space="preserve" style="white-space: pre" font-size="32" letter-spacing="0em"><tspan x="317" y="348.136">LLM</tspan></text>
+<rect class="filled" y="368" width="700" height="120" />
+<rect class="filled" y="368" width="700" height="120"/>
+<path class="filled" d="M350 296L364.434 271H335.566L350 296ZM347.5 196V246H352.5V196H347.5ZM347.5 246V273.5H352.5V246H347.5Z"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="308" y="433.318">Processing</tspan></text>
+<text class="textTitle" xml:space="preserve" style="white-space: pre" font-size="32" letter-spacing="0em"><tspan x="219" y="670.136">Activation scores</tspan></text>
+<path class="filled" d="M350 623L364.434 598H335.566L350 623ZM347.5 523V573H352.5V523H347.5ZM347.5 573V600.5H352.5V573H347.5Z"/>
+<rect class="filled" width="700" height="120" transform="translate(0 690)"/>
+<rect class="scoreRect" width="75" height="75" transform="translate(15 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="21" y="741.318">Stephan</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="20.5" y="770.318">26.6549</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(100 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="118.5" y="741.318">John</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="107" y="770.318">26.3312</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(185 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="203" y="741.318">Anne</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="192.5" y="770.318">25.1462</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(270 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="274" y="741.318">Matthew</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="275.5" y="770.318">23.6604</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(355 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="370" y="741.318">Steph</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="360.5" y="770.318">23.2208</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(440 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="452.5" y="741.318">Stefan</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="447.5" y="770.318">23.1508</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(525 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="530.5" y="741.318">Stephen</tspan></text>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="532.5" y="770.318">23.1472</tspan></text>
+<rect class="scoreRect" width="75" height="75" transform="translate(610 712.5)"/>
+<text class="text" xml:space="preserve" style="white-space: pre" font-size="16" letter-spacing="0em"><tspan x="638.5" y="755.818">....</tspan></text>
+</svg>
