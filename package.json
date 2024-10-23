@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "tsx ./src/scripts/rss.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "type": "module",
   "dependencies": {
     "@emotion/styled": "11.13.0",
     "@mantine/carousel": "7.13.2",
@@ -38,19 +40,22 @@
     "next-mdx-remote": "5.0.0",
     "react": "18",
     "react-dom": "18",
-    "recharts": "2.13.0"
+    "recharts": "2.13.0",
+    "rss": "1.2.2"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0",
+    "@svgr/webpack": "8.1.0",
     "@types/node": "20",
     "@types/react": "18",
     "@types/react-dom": "18",
+    "@types/rss": "0.0.32",
     "eslint": "8",
     "eslint-config-next": "14.2.15",
     "postcss": "8.4.47",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
     "prettier": "3.3.3",
+    "tsx": "^4.19.1",
     "typescript": "5"
   }
 }

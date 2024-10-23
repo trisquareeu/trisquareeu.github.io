@@ -1,6 +1,5 @@
-import { AspectRatio, Center, Image, Title } from '@mantine/core';
 import { readFile } from 'fs/promises';
-import { compileMDX } from 'next-mdx-remote/rsc';
+import { compileMDX, MDXRemoteProps } from 'next-mdx-remote/rsc';
 import { join } from 'path';
 
 export type PostMetadata = {
@@ -29,7 +28,11 @@ export class Post {
     readonly slug: string
   ) {}
 
-  public static async create(postsPath: string, post: string): Promise<Post> {
+  public static async create(
+    postsPath: string,
+    post: string,
+    components?: MDXRemoteProps['components']
+  ): Promise<Post> {
     if (!post.endsWith('.mdx')) {
       throw new Error('Invalid post extension');
     }
@@ -38,25 +41,7 @@ export class Post {
     const slug = post.replace('.mdx', '');
     const { frontmatter, content } = await compileMDX<PostMetadata>({
       source,
-      components: {
-        Image: (props) => (
-          <Center>
-            <AspectRatio ratio={16 / 9}>
-              <Image {...props} radius={'sm'} />
-            </AspectRatio>
-          </Center>
-        ),
-        h1: (props) => (
-          <Title order={1} mb={'lg'}>
-            {props.children}
-          </Title>
-        ),
-        h2: (props) => (
-          <Title mb={'lg'} mt={'lg'} order={2}>
-            {props.children}
-          </Title>
-        )
-      },
+      components,
       options: { parseFrontmatter: true }
     });
 
