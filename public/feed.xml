@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[trisquare.eu | blog]]></title>
+        <description><![CDATA[Trisquare blog posts]]></description>
+        <link>https://trisquare.eu/blog</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Wed, 23 Oct 2024 13:36:58 GMT</lastBuildDate>
+        <atom:link href="https://trisquare.eu/feed.xml" rel="self" type="application/rss+xml"/>
+        <copyright><![CDATA[MIT]]></copyright>
+        <language><![CDATA[en]]></language>
+        <category><![CDATA[Trisquare]]></category>
+        <category><![CDATA[Company]]></category>
+        <item>
+            <title><![CDATA[Trisquare]]></title>
+            <description><![CDATA[Learn about trisquare. Our misson, setup and goals!]]></description>
+            <link>/blog/trisquare</link>
+            <guid isPermaLink="true">/blog/trisquare</guid>
+            <category><![CDATA[Trisquare]]></category>
+            <category><![CDATA[Company]]></category>
+            <dc:creator><![CDATA[Michał Kalinowski]]></dc:creator>
+            <pubDate>Mon, 21 Oct 2024 00:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

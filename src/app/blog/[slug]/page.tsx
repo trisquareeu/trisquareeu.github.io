@@ -1,3 +1,4 @@
+import { MantinePostFactory } from '@/lib/blog/mantine-post-factory';
 import { PostFactory } from '@/lib/blog/post-factory';
 import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -19,7 +20,7 @@ export default async function Post({ params }: Params) {
 }
 
 export async function generateStaticParams() {
-  const posts = await PostFactory.create();
+  const posts = await MantinePostFactory.create();
 
   return posts.map((post) => ({ slug: post.slug }));
 }

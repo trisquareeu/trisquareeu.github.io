@@ -1,6 +1,7 @@
 'use client';
 
 import { UnstyledLink } from '@/components/unstyled-link';
+import { WithSkeleton } from '@/components/with-skeleton';
 import { PostData } from '@/lib/blog/post';
 import { getTagColor } from '@/utils/tag-color-coding';
 import {
@@ -12,13 +13,13 @@ import {
   Chip,
   Divider,
   Group,
-  Image,
   SimpleGrid,
   Stack,
   Text,
   Title,
   Transition
 } from '@mantine/core';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -92,7 +93,18 @@ export const BlogClient = (props: { posts: PostData[] }) => {
                 <Card.Section>
                   <Link href={`/blog/${post.slug}`}>
                     <AspectRatio ratio={16 / 9}>
-                      <Image src={`/${post.metadata.cover}`} alt={post.metadata.title} />
+                      <WithSkeleton>
+                        {({ toggle }) => (
+                          <Image
+                            src={`/${post.metadata.cover}`}
+                            onLoad={toggle}
+                            onError={toggle}
+                            alt={post.metadata.title}
+                            fill
+                            loading={'lazy'}
+                          />
+                        )}
+                      </WithSkeleton>
                     </AspectRatio>
                   </Link>
                 </Card.Section>

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const withMDX = require('@next/mdx')();
+import withMDX from '@next/mdx';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,4 +21,4 @@ const nextConfig = {
   }
 };
 
-module.exports = withMDX(nextConfig);
+export default withMDX()(nextConfig);

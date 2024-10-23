@@ -2,14 +2,15 @@ import { readdirSync } from 'fs';
 import { join } from 'path';
 import { Post } from './post';
 import { isFuture } from '@/components/is-future';
+import { MDXRemoteProps } from 'next-mdx-remote/rsc';
 
 export class PostFactory {
   private static readonly postsPath = join(process.cwd(), 'src', 'posts');
   private static readonly DEV = !!process.env.DEV;
 
-  public static async create(): Promise<Post[]> {
+  public static async create(components?: MDXRemoteProps['components']): Promise<Post[]> {
     const postSlugs = readdirSync(this.postsPath);
-    const posts = await Promise.all(postSlugs.map((post) => Post.create(this.postsPath, post)));
+    const posts = await Promise.all(postSlugs.map((post) => Post.create(this.postsPath, post, components)));
 
     return posts
       .filter((post) => this.DEV || !isFuture(new Date(post.metadata.publishDate)))
