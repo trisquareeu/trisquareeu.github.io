@@ -25,17 +25,19 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata(
-  { params }: Params,
-  /* eslint-disable-next-line */
-  _parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Params, parent: ResolvingMetadata): Promise<Metadata> {
   const post = await PostFactory.forSlug(params.slug);
   if (!post) {
     return notFound();
   }
 
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
   return {
-    title: post.metadata.title
+    title: post.metadata.title,
+    openGraph: {
+      images: previousImages.concat(`https://trisquare.eu/${post.metadata.cover}`)
+    }
   };
 }
