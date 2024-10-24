@@ -3,9 +3,19 @@
 import { PostData } from '@/lib/blog/post';
 import { getTagColor } from '@/utils/tag-color-coding';
 import { Badge, Box, Center, Divider, Group, Text } from '@mantine/core';
+import { useHash } from '@mantine/hooks';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const PostClient = ({ post }: { post: PostData }) => {
+  const [id] = useHash();
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push(id, { scroll: true });
+  }, [id, router]);
+
   return (
     <Center w={'100%'}>
       <Box w={{ base: '90%', md: '75%', lg: '75%', xl: '75%' }} mt={'lg'}>

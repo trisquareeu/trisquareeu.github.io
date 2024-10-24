@@ -11,7 +11,7 @@ type Params = {
 };
 
 export default async function Post({ params }: Params) {
-  const post = await PostFactory.forSlug(params.slug);
+  const post = await MantinePostFactory.forSlug(params.slug);
   if (!post) {
     return notFound();
   }
@@ -25,19 +25,41 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({ params }: Params, parent: ResolvingMetadata): Promise<Metadata> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function generateMetadata({ params }: Params, _parent: ResolvingMetadata): Promise<Metadata> {
   const post = await PostFactory.forSlug(params.slug);
   if (!post) {
     return notFound();
   }
 
   // optionally access and extend (rather than replace) parent metadata
-  const previousImages = (await parent).openGraph?.images || [];
+  // const previousImages = (await parent).openGraph?.images || [];
 
   return {
     title: post.metadata.title,
+    description: post.metadata.description,
+    applicationName: 'trisquare.eu | blog',
+    authors: post.metadata.authors.map((author) => ({ name: author, url: `https://trisquare.eu/authors/${author}` })),
+    keywords: post.metadata.tags,
+    publisher: 'Trisquare',
     openGraph: {
-      images: previousImages.concat(`https://trisquare.eu/${post.metadata.cover}`)
+      authors: post.metadata.authors,
+      type: 'article',
+      publishedTime: post.metadata.publishDate,
+      section: 'AI',
+      tags: post.metadata.tags,
+      locale: 'en_US',
+      siteName: 'trisquare.eu',
+      images: [
+        {
+          alt: 'trisquare alt text',
+          url: `https://trisquare.eu/${post.metadata.cover}`
+        }
+      ]
+    },
+    twitter: {
+      site: 'trisquareeu',
+      creator: 'trisquareeu'
     }
   };
 }

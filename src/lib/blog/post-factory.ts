@@ -18,9 +18,9 @@ export class PostFactory {
       .toSorted((a, b) => new Date(b.metadata.publishDate).getTime() - new Date(a.metadata.publishDate).getTime());
   }
 
-  public static async forSlug(slug: string): Promise<Post | null> {
+  public static async forSlug(slug: string, components?: MDXRemoteProps['components']): Promise<Post | null> {
     try {
-      const post = await Post.create(this.postsPath, `${slug}.mdx`);
+      const post = await Post.create(this.postsPath, `${slug}.mdx`, components);
       if (!this.DEV && (post.metadata.hidden || isFuture(new Date(post.metadata.publishDate)))) {
         return null;
       }

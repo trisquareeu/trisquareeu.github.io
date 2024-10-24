@@ -1,5 +1,8 @@
+'use client';
+
 import { noop, Skeleton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import Image, { ImageProps } from 'next/image';
 import { createContext, ReactNode } from 'react';
 
 export type SkeletonContextData = {
@@ -27,4 +30,8 @@ const WithSkeleton = (props: WithSkeletonProps) => {
 
 WithSkeleton.Consumer = SkeletonContext.Consumer;
 
-export { WithSkeleton };
+const ImageWithSkeleton = (props: ImageProps) => {
+  return <WithSkeleton>{({ toggle }) => <Image {...props} onLoad={() => toggle()} fill alt={'alt'} />}</WithSkeleton>;
+};
+
+export { WithSkeleton, ImageWithSkeleton };
