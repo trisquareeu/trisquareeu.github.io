@@ -23,11 +23,13 @@ export default function BlogClientLayout(
     >
       <AppShellHeader>
         <Group h={'100%'} justify={'space-between'}>
-          <UnstyledLink href={'/blog'} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Title ml={'md'} order={1} fz={'h2'}>
-              trisquare.eu | blog
-            </Title>
-          </UnstyledLink>
+          <Group h={'100%'} ml={'md'}>
+            <UnstyledLink href={'/blog'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Title order={1} fz={'h2'}>
+                trisquare.eu | blog
+              </Title>
+            </UnstyledLink>
+          </Group>
           {!isHomePage && <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" mr={'md'} />}
         </Group>
       </AppShellHeader>

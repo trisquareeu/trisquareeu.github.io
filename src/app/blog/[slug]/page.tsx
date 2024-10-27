@@ -26,20 +26,17 @@ export async function generateStaticParams() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function generateMetadata({ params }: Params, _parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata({ params }: Params, parent: ResolvingMetadata): Promise<Metadata> {
   const post = await PostFactory.forSlug(params.slug);
   if (!post) {
     return notFound();
   }
 
-  // optionally access and extend (rather than replace) parent metadata
-  // const previousImages = (await parent).openGraph?.images || [];
-
   return {
     title: post.metadata.title,
     description: post.metadata.description,
     applicationName: 'trisquare.eu | blog',
-    authors: post.metadata.authors.map((author) => ({ name: author, url: `https://trisquare.eu/authors/${author}` })),
+    authors: post.metadata.authors.map((author) => ({ name: author, url: `https://trisquare.eu/authors/${author}` })), // FIXME
     keywords: post.metadata.tags,
     publisher: 'Trisquare',
     openGraph: {
@@ -49,13 +46,7 @@ export async function generateMetadata({ params }: Params, _parent: ResolvingMet
       section: 'AI',
       tags: post.metadata.tags,
       locale: 'en_US',
-      siteName: 'trisquare.eu',
-      images: [
-        {
-          alt: 'trisquare alt text',
-          url: `https://trisquare.eu/${post.metadata.cover}`
-        }
-      ]
+      siteName: 'trisquare.eu'
     },
     twitter: {
       site: 'trisquareeu',

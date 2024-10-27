@@ -44,6 +44,9 @@ export const BlogClient = (props: { posts: PostData[] }) => {
     },
     {} as Record<string, number>
   );
+  
+  const sortedTags = Object.entries(allTags);
+  sortedTags.sort((a, b) => b[1] - a[1])
 
   if (props.posts.length <= 0) {
     return (
@@ -61,8 +64,7 @@ export const BlogClient = (props: { posts: PostData[] }) => {
     <>
       <Chip.Group value={selectedTags} onChange={(value) => setSelectedTags(value)} multiple={true}>
         <Group w={'100%'} justify={'center'} mb={'xl'} mt={'lg'}>
-          {Object.entries(allTags)
-            .toSorted((a, b) => b[1] - a[1])
+          {sortedTags
             .map(([tag, articles]) => (
               <Chip
                 color={getTagColor(tag)}
