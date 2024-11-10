@@ -9,6 +9,7 @@ import { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import { Post } from './post';
 import { PostFactory } from './post-factory';
 import { BarChart } from '@mantine/charts';
+import DitheredGradient from '@/components/dithering-gradient/DitheredGradient';
 
 export class MantinePostFactory extends PostFactory {
   private static components: MDXRemoteProps['components'] = {
@@ -36,7 +37,8 @@ export class MantinePostFactory extends PostFactory {
       <Center>
         <BarChart mt={'lg'} mb={'lg'} {...props} />
       </Center>
-    )
+    ),
+    DitheredGradient: (props) => <DitheredGradient {...props} />
   };
 
   public static create(): Promise<Post[]> {
