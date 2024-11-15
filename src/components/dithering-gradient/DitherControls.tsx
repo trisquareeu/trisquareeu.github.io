@@ -1,4 +1,4 @@
-import { Select, Slider, Stack, Text, Switch } from '@mantine/core';
+import { Chip, Group, Slider, Stack, Switch, Text } from '@mantine/core';
 import { DitherModeType, DitherSettings } from './dithering';
 
 interface DitherControlsProps {
@@ -6,37 +6,39 @@ interface DitherControlsProps {
   onSettingsChange: (settings: Partial<DitherSettings>) => void;
 }
 
-export const DitherControls: React.FC<DitherControlsProps> = ({
-  settings,
-  onSettingsChange,
-}) => {
+export const DitherControls: React.FC<DitherControlsProps> = ({ settings, onSettingsChange }) => {
   return (
-    <Stack>
-      <Select
-        label="Dithering Method"
+    <Stack gap={'xl'}>
+      <Chip.Group
+        multiple={false}
         value={settings.mode}
         onChange={(value) => onSettingsChange({ mode: value as DitherModeType })}
-        data={[
-          { value: 'NONE', label: 'None (Quantized)' },
-          { value: 'RANDOM', label: 'Random (Block-Aligned)' },
-          { value: 'FLOYD_STEINBERG', label: 'Floyd-Steinberg' },
-          { value: 'ORDERED', label: 'Ordered (8x8 Bayer)' },
-        ]}
-      />
+      >
+        <Group justify="center">
+          <Chip value={'NONE'}>None</Chip>
+          <Chip value={'RANDOM'}>Random</Chip>
+          <Chip value={'FLOYD_STEINBERG'}>Floyd-Steinberg</Chip>
+          <Chip value={'ORDERED'}>Ordered</Chip>
+        </Group>
+      </Chip.Group>
 
       <Stack>
         <Text size="sm">Color Levels: {settings.levels}</Text>
         <Slider
           min={2}
-          max={32}
-          step={2}
+          max={128}
+          restrictToMarks
           value={settings.levels}
           onChange={(value) => onSettingsChange({ levels: value })}
           marks={[
             { value: 2, label: '2' },
+            { value: 8, label: '8' },
             { value: 16, label: '16' },
-            { value: 32, label: '32' }
+            { value: 32, label: '32' },
+            { value: 64, label: '64' },
+            { value: 128, label: '128' }
           ]}
+          pb={'xl'}
         />
       </Stack>
 
@@ -48,12 +50,14 @@ export const DitherControls: React.FC<DitherControlsProps> = ({
             max={1}
             step={0.01}
             value={settings.noiseAmount}
+            showLabelOnHover={false}
             onChange={(value) => onSettingsChange({ noiseAmount: value })}
             marks={[
               { value: 0, label: '0%' },
               { value: 0.5, label: '50%' },
               { value: 1, label: '100%' }
             ]}
+            pb={'xl'}
           />
         </Stack>
       )}
@@ -63,15 +67,6 @@ export const DitherControls: React.FC<DitherControlsProps> = ({
         checked={settings.showBlocks}
         onChange={(event) => onSettingsChange({ showBlocks: event.currentTarget.checked })}
       />
-
-      <Text size="xs" c="dimmed">
-        {settings.mode === 'ORDERED' && (
-          "8x8 Bayer matrix aligned with JPEG compression blocks."
-        )}
-        {settings.mode === 'RANDOM' && (
-          "Random noise applied in 2x2 blocks, aligned to compression grid."
-        )}
-      </Text>
     </Stack>
   );
 };

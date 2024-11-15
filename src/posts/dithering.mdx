@@ -43,7 +43,17 @@ A practical approach is:
 - Use patterns that are no smaller than 2x2 pixels to ensure they survive compression
 - Consider the viewing distance - larger patterns are more visible but survive compression better
 
+## Compression-Aware Dithering
+   
+Experiment with different dithering techniques optimized for social media compression. Toggle the grid to see
+8x8 JPEG compression blocks.
+   
 <DitheredGradient />
+
+<Note mb={0}>
+Social media platforms typically compress images by reducing colors within 8x8 pixel blocks. Dither patterns
+aligned to these blocks have a better chance of surviving compression.
+</Note>
 
 ## Different Flavors of Dithering
 

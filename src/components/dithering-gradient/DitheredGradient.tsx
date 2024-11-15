@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Stack, Title, Text } from '@mantine/core';
+import { Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 import { DitherCanvas } from './DitherCanvas';
 import { DitherControls } from './DitherControls';
@@ -28,28 +28,15 @@ export const DitheredGradient: React.FC = () => {
   };
 
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
-      <Stack>
-        <Stack>
-          <Title order={2}>Compression-Aware Dithering</Title>
-          <Text size="sm" c="dimmed">
-            Experiment with different dithering techniques optimized for social media compression. Toggle the grid to
-            see 8x8 JPEG compression blocks.
-          </Text>
-        </Stack>
+    <Stack>
+      <DitherCanvas settings={settings} />
 
-        <DitherCanvas settings={settings} />
+      <Text size="xs" c={'dimmed'}>
+        {GRADIENT_DESCRIPTIONS[settings.mode]}
+      </Text>
 
-        <Text size="sm">{GRADIENT_DESCRIPTIONS[settings.mode]}</Text>
-
-        <DitherControls settings={settings} onSettingsChange={handleSettingsChange} />
-
-        <Text size="xs" c="dimmed" mt="sm">
-          Social media platforms typically compress images by reducing colors within 8x8 pixel blocks. Dither patterns
-          aligned to these blocks have a better chance of surviving compression.
-        </Text>
-      </Stack>
-    </Card>
+      <DitherControls settings={settings} onSettingsChange={handleSettingsChange} />
+    </Stack>
   );
 };
 

@@ -21,7 +21,14 @@ const typeToColor = {
 
 export const Note = (props: PropsWithChildren<NoteProps>) => {
   return (
-    <Alert mt={'xl'} mb={'xl'} title={props.title} icon={typeToIcon[props.type]} color={typeToColor[props.type]}>
+    <Alert
+      mt={'xl'}
+      mb={'xl'}
+      title={props.title}
+      icon={typeToIcon[props.type]}
+      color={typeToColor[props.type]}
+      {...props}
+    >
       {props.children}
     </Alert>
   );
