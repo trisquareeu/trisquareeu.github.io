@@ -4,7 +4,7 @@ import { Note } from '@/components/note';
 import { TitleWithScroll } from '@/components/with-scroll';
 import { ImageWithSkeleton } from '@/components/with-skeleton';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Anchor, AspectRatio, Center } from '@mantine/core';
+import { Anchor, AspectRatio, Center, Text } from '@mantine/core';
 import { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import { Post } from './post';
 import { PostFactory } from './post-factory';
@@ -14,9 +14,12 @@ import DitheredGradient from '@/components/dithering-gradient/DitheredGradient';
 export class MantinePostFactory extends PostFactory {
   private static components: MDXRemoteProps['components'] = {
     Image: (props) => (
-      <AspectRatio mt={'xl'} mb={'xl'} w={'100%'} ratio={16 / 9}>
+      <>
+      <AspectRatio w={'100%'} ratio={16 / 9} {...props}>
         <ImageWithSkeleton {...props} />
       </AspectRatio>
+      {props.caption && <Center mt={'sm'}><Text size={'xs'} c={'dimmed'}>{props.caption}</Text></Center>}
+      </>
     ),
     h1: (props) => <TitleWithScroll mt={'xl'} mb={'xl'} {...props} order={1} />,
     h2: (props) => <TitleWithScroll mt={'xl'} {...props} order={2} />,
@@ -38,7 +41,8 @@ export class MantinePostFactory extends PostFactory {
         <BarChart mt={'lg'} mb={'lg'} {...props} />
       </Center>
     ),
-    DitheredGradient: (props) => <DitheredGradient {...props} />
+    DitheredGradient: (props) => <DitheredGradient {...props} />,
+    Caption: (props) => <Center><Text size={'xs'} c={'dimmed'} {...props}>{props.children}</Text></Center>
   };
 
   public static create(): Promise<Post[]> {

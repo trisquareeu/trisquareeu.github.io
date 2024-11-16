@@ -1,41 +1,45 @@
 ---
 title: Add Some Noise!
-description: Generative AI, such as Large Language Models (LLM), is becoming a standard component of modern applications. While using this technology in a software may significantly extend the viable possibilities, it also puts a pinch of unpredictability and randomness into the strict logic of a computer program. Regardless of software type, data sanitization and validation have always been among the most critical and challenging aspects of programming. Failing to properly sanitize data can lead to a range of severe problems. Large Language Models are known for generating human-like, coherent and contextually appropriate responses. This is because these models were trained on huge corpora of natural language with carefully selected training data that best represents human communication. Because LLMs learn to mimic this fluid, context-dependent style of communication, they tend to generate outputs with similar characteristics - outputs that may be perfectly understandable to humans but lack the strict consistency and precise formatting that computer systems require. This makes them particularly challenging for direct programmatic use, as their outputs often need complex parsing and validation. In this article, we will show you a possible way of guiding LLM to always output correctly structured data with limited vocabulary. We believe this may significantly reduce the overhead of data sanitization. Although we will stick to JSON and JSON Schemas as examples, the described approach could be easily extended to other formats.
-publishDate: 2024-11-11
-cover: guided-generation.png
+description: Who doesn't love smooth gradients in their designs? However great look comes with a price - thousands of unique colors, the compression algorithms' worst nightmare. Have you ever tried to use your favorite image on some social platform and ended up with seamless blend of colors had annoying stepped color bands? Don't worry we did that too!
+publishDate: 2024-11-16
+cover: dithering.png
 readTime: 7
 authors:
  - Michał Kalinowski
  - Kordian Grabowski
 tags:
-  - LLM
+  - Compression
 ---
 
 # Add Some Noise!
 
-Who doesn't love smooth gradients in their social media designs? Social media platforms, unfortunately, don't share our enthusiasm - because smooth gradients can contain thousands of unique colors, making them particularly challenging to compress efficiently. While gradients have become a standard component of modern web interfaces and can significantly extend design possibilities, they're essentially compression algorithms' worst nightmare. When these platforms process our carefully crafted gradients through their aggressive optimization pipelines, those smooth color transitions often end up looking like stepped color bands instead of the seamless blend we intended.
-Social media platforms are known for aggressive image optimization. This is because these platforms need to balance visual quality with bandwidth constraints and storage costs. When optimizing for file size, these platforms primarily reduce color depth - a process that leads to visible banding in smooth gradients. While they also reduce resolution, it's the color depth reduction that causes those ugly stepped transitions in what should be smooth gradients.
-In this article, we will show you a possible way of mitigating gradient banding through selective dithering techniques. We believe this may significantly reduce common artifacts while maintaining optimal file sizes. Although we will focus on gradient backgrounds as examples, the described approach could be easily extended to other types of visual content.
+Who doesn't love smooth gradients in their designs? However, a great look comes at a price - thousands of unique colors, the worst nightmare of compression algorithms. Have you ever tried to use your favorite image on a social platform and ended up with a seamless color blend that had annoying stepped bands? Don't worry, we've been there too!
 
-## Understanding the Challenge
+<Image src={'/bad-gradient.png'} caption={'Example of color banding after compression' } />
 
-Before diving into solutions, it's important to understand why banding occurs. When platforms compress images, they reduce the number of available colors through quantization - essentially reducing the number of bits used to represent each color channel. For example, reducing from 8 bits per channel to 4 bits means going from 256 possible values to just 16. This quantization is what creates those visible steps in gradients where subtle transitions should be.
+This is because these platforms need to balance visual quality with bandwidth constraints and storage costs. To achieve these goals, all uploaded images go through the compression pipelines, losing their original resolution and, most importantly in our case, color depth.
 
-To put this in perspective:
+If you don't want to make the silly mistake we did, read on to learn about ways to mitigate gradient banding through selective dithering techniques. We believe this can significantly reduce common artifacts while maintaining optimal file sizes. Although we focus on gradient backgrounds as an example, the approach described could easily be extended to other types of visual content.
 
-Original image: 8-bit per channel = 256 × 256 × 256 = 16.7 million possible colors
+## Understand the Challenge
 
-After compression: 4-bit per channel = 16 × 16 × 16 = 4096 possible colors
+The typical compression pipeline reduces the number of bits used to represent each color channel. For example, reducing from 8 bits per channel to 4 bits means going from 256 possible values to just 16. This quantization is what creates those visible steps in gradients where subtle transitions should be.
 
-This massive reduction to just 4,096 colors is why smooth gradients suffer so dramatically. Even a simple linear gradient that might originally contain thousands of subtle color variations will be forced to use far fewer distinct values, making the banding much more visible to the human eye.
+To put this into perspective:
 
-While platforms also downscale resolution, this actually affects image detail rather than causing banding. Our dithering solution primarily addresses the color quantization issue, though we need to consider resolution when designing our dither patterns.
+Original image: 8-bits per channel = 256 × 256 × 256 = 16.7 million possible colors
 
-## Choose Your Pattern Size Wisely
+After compression: 4-bits per channel = 16 × 16 × 16 = 4096 possible colors
 
-When applying dithering to combat banding, we're essentially trading color precision for spatial patterns. However, these patterns need to survive the compression process. This brings us to a crucial concept: spatial frequency preservation.
+This massive reduction to just 4,096 colors is why smooth gradients suffer so dramatically. Even a simple linear gradient, which may originally have contained thousands of subtle color variations, is forced to use far fewer distinct values, making the banding much more visible to the human eye.
+
+## Choose the Pattern Size Wisely
+
+When applying dithering to reduce banding, we're essentially trading color precision for spatial patterns. However, these patterns need to survive the compression process. This brings us to a crucial concept: spatial frequency preservation.
 
 Most image compression algorithms work on fixed 8x8 pixel blocks. Any pattern frequencies higher than half the block size (known as the Nyquist frequency) will be lost during compression. Therefore, our dither patterns must be designed with these compression blocks in mind.
+
+[PRZYKŁAD jak z fragmentu obrazka uciekają detale]
 
 A practical approach is:
 
@@ -43,19 +47,19 @@ A practical approach is:
 - Use patterns that are no smaller than 2x2 pixels to ensure they survive compression
 - Consider the viewing distance - larger patterns are more visible but survive compression better
 
-## Compression-Aware Dithering
+## See It In Practice 
    
 Experiment with different dithering techniques optimized for social media compression. Toggle the grid to see
 8x8 JPEG compression blocks.
    
 <DitheredGradient />
 
-<Note mb={0}>
-Social media platforms typically compress images by reducing colors within 8x8 pixel blocks. Dither patterns
+<Note mb={0} type={'info'} title={'Important!'}>
+Most compression algorithms reduce colors within 8x8 pixel blocks. Dither patterns
 aligned to these blocks have a better chance of surviving compression.
 </Note>
 
-## Different Flavors of Dithering
+## Learn About Different Ways to Dither
 
 Let's explore how different dithering techniques handle this balance:
 
@@ -79,7 +83,7 @@ Let's explore how different dithering techniques handle this balance:
    - Generally produces lower quality results than ordered dithering
    - Useful for quick previews or when processing speed is critical
 
-## Smart Dithering: The Selective Approach
+## Be Smart!
 
 Not all parts of an image need the same treatment. This is where selective dithering comes in - applying different techniques to different areas based on their content:
 
@@ -109,8 +113,15 @@ While dithering can effectively combat banding, it needs careful implementation 
 3. Consider the balance between pattern visibility and compression survival
 4. Test results with your target compression settings
 
-## Don't Let Them Destroy Your Work
+## Don't Let Your Work Be Destroyed
 
 By using selective dithering techniques thoughtfully, we can achieve better image quality while meeting platform requirements. While this approach requires more initial setup, understanding the relationship between dither patterns and compression blocks allows us to maintain visual quality where it matters most.
+
+<div style={{display: 'flex', width: '100%', gap: '10px'}}>
+   <Image src={'/guided-generation.png'} mb={0} />
+   <Image src={'/bad-gradient.png'} mb={0} />
+</div>
+<Caption mt={'sm'}>The devil is in the details. Can you notice where dithering was applied?</Caption>
+
 
 Remember: the goal isn't to fight compression entirely, but to work with it intelligently. By understanding how compression affects different image elements and applying dithering selectively, we can maintain visual quality while keeping file sizes reasonable.

@@ -5,7 +5,7 @@ import withMDX from '@next/mdx';
 const nextConfig = {
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  output: process.env.DEV ? 'standalone' : 'export',
+  // output: process.env.DEV ? 'standalone' : 'export',
   // Optionally, add any other Next.js config below
   webpack(config) {
     config.module.rules.push({
