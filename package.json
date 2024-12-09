@@ -40,7 +40,7 @@
     "next-mdx-remote": "5.0.0",
     "react": "18",
     "react-dom": "18",
-    "recharts": "^2.13.3",
+    "recharts": "^2.14.1",
     "rss": "1.2.2"
   },
   "devDependencies": {
