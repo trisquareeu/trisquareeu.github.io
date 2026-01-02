@@ -84,7 +84,7 @@ Let's consider the following JSON Schema.
     }
     `
   }
-  language={'JSON'}
+  language={'json'}
  />
 
 JSON syntax and JSON Schema allow for multiple permutations in data structure. As previously discussed, this makes both CFGs and regular expressions insufficient for validating all possible forms. However, for generation purposes, we can select a single structural variant and describe it using CFG production rules:
@@ -121,7 +121,7 @@ When we pass the input to the LLM, according to the production rules of the ment
 <Code
   code={[
     {
-      language: 'Python',
+      language: 'python',
       code: `
 class MyLogitsProcessor(LogitsProcessor):
     def __init__(self, tokenizer):
@@ -145,7 +145,7 @@ To make output JSON Schema compliant, we must force model to generate only valid
 <Code
   code={[
     {
-      language: 'Python',
+      language: 'python',
       code: `
 tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
 model = AutoModelForCausalLM.from_pretrained("google/gemma-2-2b")
@@ -179,7 +179,7 @@ For convenience, we can use frameworks like [LangChain](https://www.langchain.co
 <Code
   code={[
     {
-      language: 'Python',
+      language: 'python',
       code: `
 class InvitationSuggestion(BaseModel):
     """A suggestion of a person which should be invited to the party"""
@@ -209,7 +209,7 @@ The idea is quite simple. First, let the LLM use its full reasoning capabilities
 <Code
   code={[
     {
-      language: 'Python',
+      language: 'python',
       code: `
 class InvitationSuggestion(BaseModel):
     """A suggestion of a person which should be invited to the party"""

@@ -5,13 +5,12 @@ import { notFound } from 'next/navigation';
 import { PostClient } from './page.client';
 
 type Params = {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function Post({ params }: Params) {
-  const post = await MantinePostFactory.forSlug(params.slug);
+  const slug = (await params).slug;
+  const post = await MantinePostFactory.forSlug(slug);
   if (!post) {
     return notFound();
   }
@@ -27,7 +26,8 @@ export async function generateStaticParams() {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function generateMetadata({ params }: Params, parent: ResolvingMetadata): Promise<Metadata> {
-  const post = await PostFactory.forSlug(params.slug);
+  const slug = (await params).slug;
+  const post = await PostFactory.forSlug(slug);
   if (!post) {
     return notFound();
   }
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Params, parent: ResolvingMeta
       tags: post.metadata.tags,
       locale: 'en_US',
       siteName: 'trisquare.eu',
-      url: `https://trisquare.eu/blog/${params.slug}`
+      url: `https://trisquare.eu/blog/${slug}`
     },
     twitter: {
       site: 'trisquareeu',

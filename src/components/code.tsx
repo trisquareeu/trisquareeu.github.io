@@ -21,9 +21,9 @@ export type CodeProps = {
 };
 
 const languageToIconMap = {
-  Typescript: <IconBrandTypescript />,
-  Java: <IconBrandAmongUs />,
-  Python: <IconBrandPython />
+  typescript: <IconBrandTypescript />,
+  java: <IconBrandAmongUs />,
+  python: <IconBrandPython />
 } as Record<string, ReactNode>;
 
 export const Code = (props: CodeProps) => {

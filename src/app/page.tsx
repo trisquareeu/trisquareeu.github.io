@@ -1,8 +1,9 @@
-import { Button, Center, Stack, Title } from '@mantine/core';
+
+import { ButtonLink } from '@/components/button-link';
+import { Center, Stack, Title } from '@mantine/core';
+import { IconArticle } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { StyledMain } from './page.styles';
-import Link from 'next/link';
-import { IconArticle } from '@tabler/icons-react';
 
 export const metadata: Metadata = {
   title: 'trisquare'
@@ -14,9 +15,9 @@ export default function LandingPage() {
       <Center h={'100%'}>
         <Stack>
           <Title order={1}>trisquare.eu</Title>
-          <Button leftSection={<IconArticle />} component={Link} href={'/blog'}>
+          <ButtonLink leftSection={<IconArticle />} href="/blog">
             blog
-          </Button>
+          </ButtonLink>
         </Stack>
       </Center>
     </StyledMain>
