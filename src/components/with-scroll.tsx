@@ -33,8 +33,8 @@ export const TitleWithScroll = (props: TitleProps) => {
   return (
     <WithScroll id={id}>
       {(onClick, href) => (
-        <Group align="center">
-          <Title {...props} id={id} onClick={onClick} style={{ cursor: 'pointer' }}>
+        <Group align="center" mt={props.mt} mb={props.mb} gap={0}>
+          <Title {...props} mt={0} mb={0} id={id} onClick={onClick} style={{ cursor: 'pointer' }}>
             {props.children}
           </Title>
           <Tooltip
@@ -51,6 +51,7 @@ export const TitleWithScroll = (props: TitleProps) => {
               ref={ref}
               variant={hovered ? 'light' : 'white'}
               style={{ cursor: 'pointer' }}
+              m={0}
             >
               <IconLink />
             </ThemeIcon>

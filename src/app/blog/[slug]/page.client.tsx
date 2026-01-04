@@ -18,7 +18,7 @@ export const PostClient = ({ post }: { post: PostData }) => {
   }, [id, router]);
 
   return (
-    <Center w={'100%'}>
+    <Center w={'100%'} style={{ wordWrap: 'break-word' }}>
       <Box w={{ base: '90%', md: '75%', lg: '75%', xl: '75%' }} mt={'lg'}>
         <CodeContextProvider>{post.content}</CodeContextProvider>
         <Divider mt={'md'} />

@@ -33,7 +33,7 @@ WithSkeleton.Consumer = SkeletonContext.Consumer;
 const ImageWithSkeleton = (props: ImageProps) => {
   return (
     <WithSkeleton>
-      {({ toggle }) => <Image {...props} onLoad={() => toggle()} fill alt={props.alt} style={{ fill: 'red' }} />}
+      {({ toggle }) => <Image onLoad={() => toggle()} fill  {...props} />}
     </WithSkeleton>
   );
 };

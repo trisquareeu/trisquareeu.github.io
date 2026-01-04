@@ -1,18 +1,20 @@
 import { notFound, redirect } from 'next/navigation';
 
 type Params = {
-  params: {
+  params: Promise<{
     name: string;
-  };
+  }>;
 };
 
 const teamMemberToLinkedin: Record<string, string> = {
   'kordian-grabowski': 'https://www.linkedin.com/in/kordiangrabowski/',
-  'michal-kalinowski': 'https://www.linkedin.com/in/kalinowski-michal/'
+  'micha%C5%82-kalinowski': 'https://www.linkedin.com/in/kalinowski-michal/',
+  'artsiom-paliashchuk': 'https://www.linkedin.com/in/artsiompaliashchuk/',
 };
 
 export default async function TeamMember({ params }: Params) {
-  const link = teamMemberToLinkedin[params.name];
+  const name = (await params).name;
+  const link = teamMemberToLinkedin[name];
   if (!link) {
     return notFound();
   }
@@ -20,6 +22,6 @@ export default async function TeamMember({ params }: Params) {
   return redirect(link);
 }
 
-export function generateStaticParams() {
-  return [{ name: 'michal-kalinowski' }, { name: 'kordian-grabowski' }];
+export async function generateStaticParams() {
+  return [{ name: 'micha%C5%82-kalinowski' }, { name: 'kordian-grabowski' }];
 }

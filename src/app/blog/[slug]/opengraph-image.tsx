@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
+ 
 import { PostFactory } from '@/lib/blog/post-factory';
 import { readFile } from 'fs/promises';
 import { ImageResponse } from 'next/og';
@@ -64,13 +64,13 @@ const BlogImage = (props: { title: string; date?: string; src: string }) => {
   );
 };
 
-export default async function Image({ params }: { params: { slug: string } }) {
+export default async function Image(props: { params: Promise<{ slug: string }> }) {
   const logoData = await readFile(join(process.cwd(), 'public', 'logo_no_fill.png'));
 
   const fontDataBold = await readFile(join(process.cwd(), 'public', 'Poppins-Bold.ttf'));
   const fontDataRegular = await readFile(join(process.cwd(), 'public', 'Poppins-Regular.ttf'));
 
-  const post = await PostFactory.forSlug(params.slug);
+  const post = await PostFactory.forSlug((await props.params).slug);
   if (!post) {
     return new ImageResponse(<BlogImage title="Post not found :(" src={logoData.toString('base64')} />, {
       ...size
@@ -88,6 +88,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
     }
   );
 }
+
 export async function generateStaticParams() {
   const posts = await PostFactory.create();
 

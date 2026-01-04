@@ -4,7 +4,9 @@ const tagColorCoding = {
   softwareengineering: 'blue',
   machinelearning: 'violet',
   ai: 'green',
-  llm: 'pink'
+  llm: 'pink',
+  performanceengineering: 'red',
+  mongo: 'teal',
 } satisfies Record<string, MantineColor>;
 
 export function getTagColor(tag: string): MantineColor {

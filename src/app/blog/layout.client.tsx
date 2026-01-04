@@ -13,7 +13,7 @@ import { PropsWithChildren } from 'react';
 async function loadShiki() {
   const { createHighlighter } = await import('shiki');
   const shiki = await createHighlighter({
-    langs: ['tsx', 'python', 'json'],
+    langs: ['tsx', 'python', 'json', 'dockerfile', 'bash'],
     // You can load supported themes here
     themes: [],
   });
