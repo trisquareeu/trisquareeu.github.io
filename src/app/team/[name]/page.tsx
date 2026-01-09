@@ -8,7 +8,7 @@ type Params = {
 
 const teamMemberToLinkedin: Record<string, string> = {
   'kordian-grabowski': 'https://www.linkedin.com/in/kordiangrabowski/',
-  'micha%C5%82-kalinowski': 'https://www.linkedin.com/in/kalinowski-michal/',
+  'michal-kalinowski': 'https://www.linkedin.com/in/kalinowski-michal/',
   'artsiom-paliashchuk': 'https://www.linkedin.com/in/artsiompaliashchuk/',
 };
 
@@ -23,5 +23,5 @@ export default async function TeamMember({ params }: Params) {
 }
 
 export async function generateStaticParams() {
-  return [{ name: 'micha%C5%82-kalinowski' }, { name: 'kordian-grabowski' }];
+  return [{ name: 'michal-kalinowski' }, { name: 'kordian-grabowski' }, { name: 'artsiom-paliashchuk' }];
 }
