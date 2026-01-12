@@ -23,7 +23,7 @@
     "@mantine/modals": "8.3.10",
     "@mantine/notifications": "8.3.10",
     "@mantine/nprogress": "8.3.10",
-    "@mantine/spotlight": "8.3.10",
+    "@mantine/spotlight": "8.3.12",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",
     "@next/mdx": "16.1.1",
